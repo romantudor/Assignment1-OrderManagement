@@ -1,0 +1,54 @@
+CREATE TABLE `order` (
+   `idOrder` int(11) NOT NULL,
+   `Customer` varchar(45) NOT NULL,
+   `Adress` varchar(45) NOT NULL,
+   `deliveryDate` date NOT NULL,
+   `status` varchar(45) NOT NULL,
+   PRIMARY KEY (`idOrder`)
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+ 
+ CREATE TABLE `orderdetails` (
+   `idOrder` int(11) NOT NULL,
+   `idProduct` int(11) NOT NULL,
+   `idUser` int(11) NOT NULL,
+   `quantity` int(11) DEFAULT NULL,
+   `total` float DEFAULT NULL,
+   `orderDate` datetime DEFAULT NULL,
+   PRIMARY KEY (`idOrder`,`idProduct`,`idUser`),
+   KEY `idProduct_idx` (`idProduct`),
+   KEY `idUser_idx` (`idUser`),
+   CONSTRAINT `idOrder` FOREIGN KEY (`idOrder`) REFERENCES `order` (`idOrder`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+   CONSTRAINT `idProduct` FOREIGN KEY (`idProduct`) REFERENCES `product` (`idproduct`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+   CONSTRAINT `idUser` FOREIGN KEY (`idUser`) REFERENCES `user` (`iduser`) ON DELETE NO ACTION ON UPDATE NO ACTION
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+ 
+ CREATE TABLE `product` (
+   `idproduct` int(11) NOT NULL,
+   `title` varchar(45) DEFAULT NULL,
+   `description` varchar(45) DEFAULT NULL,
+   `color` varchar(45) DEFAULT NULL,
+   `size` int(11) DEFAULT NULL,
+   `price` float DEFAULT NULL,
+   `stock` int(11) DEFAULT NULL,
+   PRIMARY KEY (`idproduct`)
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+ 
+ CREATE TABLE `user` (
+   `iduser` int(11) NOT NULL,
+   `type` tinyint(1) NOT NULL,
+   `name` varchar(45) NOT NULL,
+   `password` varchar(100) NOT NULL,
+   PRIMARY KEY (`iduser`)
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+ 
+ CREATE DEFINER=`root`@`localhost` PROCEDURE `DeleteUser`(in username varchar(45))
+BEGIN
+delete from user where name=username;
+END
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `UpdateUser`(in id int, in isadmin bool, in uname varchar(45),in pass varchar(45))
+BEGIN
+UPDATE user
+     SET   type=isadmin, name=uname,password=pass
+     WHERE iduser=id ;
+END
